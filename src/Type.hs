@@ -26,14 +26,14 @@ data Term = Var VarIndex | Comb String [Term]
 
 instance Pretty Term where
     pretty (Var i) = pretty i
-    -- wenn tail leere liste, nur head ausagebn
+    -- wenn tail leere liste, nur head ausgeben
     pretty (Comb "." [h,Comb "[]" []]) = "[" ++ pretty h ++ "]"
     -- wenn der tail wieder eine liste ist, diese per komma appenden
     -- z.B. [2|[3|[4|A]]] == [2,3,4|A]
     pretty (Comb "." [h,Comb "." t]) = "[" ++ pretty h ++ "," ++ init (tail (pretty (Comb "." t))) ++ "]"
     pretty (Comb "." [h,t]) = "[" ++ pretty h ++ "|" ++ pretty t ++ "]"
     pretty (Comb s []) = s
-    pretty (Comb s t) = s ++ "(" ++ intercalate "," (map pretty t) ++ ")"
+    pretty (Comb s t) = s ++ "(" ++ intercalate ", " (map pretty t) ++ ")"
 
 -- Data type for program rules
 data Rule = Term :- [Term]
@@ -47,3 +47,15 @@ data Prog = Prog [Rule]
 data Goal = Goal [Term]
   deriving Show
 
+-- Test instance
+testPretty :: String
+testPretty = pretty (Comb "append" [ Var 0
+                            , Comb "." [ Var 1
+                                       , Var 2
+                                       ]
+                            , Comb "." [ Comb "1" []
+                                       , Comb "." [ Comb "2" []
+                                                  , Comb "[]" []
+                                                  ]
+                                       ]
+                            ])
