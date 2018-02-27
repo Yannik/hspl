@@ -22,7 +22,7 @@ instance Pretty VarIndex where
 
 -- Data type for terms
 data Term = Var VarIndex | Comb String [Term]
-  deriving Show
+  deriving (Show, Eq)
 
 instance Pretty Term where
     pretty (Var i) = pretty i
