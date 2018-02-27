@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 
 module Type
-  ( VarIndex, Term(..), Rule(..), Prog(..), Goal(..)
+  ( VarIndex, Term(..), Rule(..), Prog(..), Goal(..), Pretty(..)
   ) where
 
 import Data.Char
