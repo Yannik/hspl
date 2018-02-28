@@ -12,7 +12,7 @@ ds t1 t2 | t1 == t2   = Nothing
 
 ds' :: Term -> Term -> Maybe (Term, Term)
 ds' (Var v) t2 = Just (Var v, t2)
-ds' t1 (Var v) = Just (t1, Var v)
+ds' t1 (Var v) = Just (Var v, t1) -- we want disagreement sets ordered Var->Comb for unification
 ds' (Comb functor1 terms1) (Comb functor2 terms2)
     | functor1 /= functor2 ||
       length terms1 /= length terms2 = Just ((Comb functor1 terms1), (Comb functor2 terms2))
