@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 
 module SLD
-  ( SLDTree(..), sld, sgoal, sprog, mygoal, myprog
+  ( SLDTree(..), sld, sgoal, sprog, mygoal, myprog, gprog, ggoal
   ) where
 
 import Type
@@ -38,7 +38,7 @@ sld p g = sld' (namespaceProg (termsMaxVarIndex g) p) g Substitution.empty
   sld' p g s = SLDTree g (mapMaybe (sld'' p g s) p)
   sld'' :: Prog ->  Goal -> Subst -> Rule -> Maybe (Subst, SLDTree)
   sld'' p (hg:tg) s1 (hr :- tr) = case (unify hg hr) of
-              Just s2 -> Just (s2, sld' (namespaceProg (sgMaxVarIndex s2 (hg:tg)) p) (map (apply s2) tr ++ tg) (compose s1 s2))
+              Just s2 -> Just (s2, sld' (namespaceProg (sgMaxVarIndex s2 (hg:tg)) p) (map (apply s2) (tr ++ tg)) (compose s1 s2))
               Nothing -> Nothing -- nur wenn regel anwendbar gibt es einen neuen node
 
 sgMaxVarIndex :: Subst -> Goal -> Int
@@ -82,3 +82,9 @@ mygoal = [Comb "append" [Var 0, Var 1, Comb "." [Comb "1" [], Comb "." [Comb "2"
 myrule1 = Comb "append" [Comb "[]" [], Var 0, Var 0] :- []
 myrule2 = Comb "append" [Comb "." [Var 0, Var 1], Var 2, Comb "." [Var 0, Var 3]] :- [Comb "append" [Var 1, Var 2, Var 3]]
 myprog = [myrule1, myrule2]
+
+grule1 = Comb "vater" [Comb "Hans" [], Comb "Peter" []] :- []
+grule2 = Comb "vater" [Comb "Peter" [], Comb "Frank" []] :- []
+grule3 = Comb "grossvater" [Var 0, Var 2] :- [Comb "vater" [Var 0, Var 1], Comb "vater" [Var 1, Var 2]]
+gprog = [grule1, grule2, grule3]
+ggoal = [Comb "grossvater" [Comb "Hans" [], Var 0]]
