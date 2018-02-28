@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 
 module SLD
-  (
+  ( SLDTree(..), sld, sgoal, sprog, mygoal, myprog
   ) where
 
 import Type
@@ -73,7 +73,7 @@ subsMaxVarIndex s = case maximumMay (fst (unzip s)) of
                        Just x -> Just (x+1)
                        Nothing -> Nothing
 
-sgoal = [Comb "mother" [Comb "john" [], Comb "jane" []]]
+sgoal = [Comb "mother" [Comb "john" [], Var 0]]
 srule1 = Comb "mother" [Comb "john" [], Comb "jane" []] :- []
 srule2 = Comb "mother" [Comb "darleen" [], Comb "jane" []] :- []
 sprog = [srule1, srule2]

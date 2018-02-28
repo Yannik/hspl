@@ -2,7 +2,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 
 module Substitution
-  ( Subst(..), empty, single, apply, compose
+  ( Subst(..), SingleSub, empty, single, apply, compose
   ) where
 
 import Type
