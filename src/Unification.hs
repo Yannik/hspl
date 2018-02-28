@@ -1,5 +1,5 @@
 module Unification
-  ( ds
+  ( ds, unify
   ) where
 
 import Type

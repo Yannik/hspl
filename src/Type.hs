@@ -26,6 +26,7 @@ data Term = Var VarIndex | Comb String [Term]
 
 instance Pretty Term where
     pretty (Var i) = pretty i
+    pretty (Comb "[]" []) = "[]"
     -- wenn tail leere liste, nur head ausgeben
     pretty (Comb "." [h,Comb "[]" []]) = "[" ++ pretty h ++ "]"
     -- wenn der tail wieder eine liste ist, diese per komma appenden
@@ -40,12 +41,10 @@ data Rule = Term :- [Term]
   deriving Show
 
 -- Data type for programs
-data Prog = Prog [Rule]
-  deriving Show
+type Prog = [Rule]
 
 -- Data type for goals
-data Goal = Goal [Term]
-  deriving Show
+type Goal = [Term]
 
 -- Test instance
 testPretty :: String
