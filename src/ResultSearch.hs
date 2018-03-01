@@ -1,5 +1,5 @@
 module ResultSearch
-  ( dfs, bfs, solve
+  ( Strategy, dfs, bfs, solve
   ) where
 
 import SLD

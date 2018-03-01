@@ -1,4 +1,5 @@
 module Main where
+import qualified Interactive
 
 main :: IO ()
-main = putStrLn "Not yet implemented"
+main = Interactive.main
