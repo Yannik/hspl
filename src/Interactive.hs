@@ -1,3 +1,5 @@
+{-# LANGUAGE ViewPatterns #-}
+
 module Interactive (
 
 ) where
@@ -7,6 +9,7 @@ import Type
 import ResultSearch
 import Data.List
 import SLD
+import Parser
 
 main :: IO ()
 main = do
@@ -19,14 +22,21 @@ work :: Prog -> Strategy -> IO ()
 work p s = do
   putStr "?- "
   i <- getLine
-  if i /= ":quit" then do
-    case i of
-      ":help" -> printHelp
-      ":info" -> info p
-  --  ":load" ->
-  --  ":set" ->
-    work p s
-  else return ()
+  case i of
+    ":help" -> do
+      printHelp
+      work p s
+    ":info" -> do
+      info p
+      work p s
+    (stripPrefix ":load " -> Just file) -> parse s
+    (stripPrefix ":set " -> Just strat) -> case strat of
+      "bfs" -> work p bfs
+      "dfs" -> work p dfs
+      otherwise -> work p s
+    ":quit" -> return ()
+    --goal -> parse
+
 
 info :: Prog -> IO ()
 info p = do
