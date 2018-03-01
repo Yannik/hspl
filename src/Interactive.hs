@@ -5,6 +5,7 @@ main
 ) where
 
 import System.Exit
+import System.IO
 import Type
 import ResultSearch
 import Data.List
@@ -22,6 +23,7 @@ main = do
 work :: Prog -> Strategy -> IO ()
 work p s = do
   putStr "?- "
+  hFlush stdout
   i <- getLine
   case i of
     ":help" -> do
