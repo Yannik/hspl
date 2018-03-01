@@ -1,5 +1,7 @@
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Parser
-  ( Parse(..), parseFile
+  ( module Parser --Parse(..), parseFile
   ) where
 
 import System.IO.Error (catchIOError)
@@ -12,7 +14,7 @@ import Type
 class Parse a where
   parse :: String -> Either String a
   parseWithVars :: String -> Either String (a, [(VarIndex, String)])
-  
+
   parse = fmap fst . parseWithVars
 
 -- Try to parse a goal
@@ -46,11 +48,11 @@ withVars = flip (<*>) (map (\(x, y) -> (y, x)) <$> getState) . ((,) <$>)
 
 -- Parse a goal
 goal :: Parser Goal
-goal = Goal <$> (whitespaces *> commaSep term <* symbol "." <* eof)
+goal = whitespaces *> commaSep term <* symbol "." <* eof
 
 -- Parse a program
 prog :: Parser Prog
-prog = Prog <$> (whitespaces *> many rule <* eof)
+prog = whitespaces *> many rule <* eof
 
 -- Parse a rule
 rule :: Parser Rule
@@ -130,4 +132,3 @@ commaSep p = p `sepBy` symbol ","
 -- Parse something enclosed in parentheses
 parens :: Parser a -> Parser a
 parens = between (symbol "(") (symbol ")")
-

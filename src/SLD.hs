@@ -12,17 +12,21 @@ import Safe.Foldable
 import Data.Maybe
 
 instance Pretty Rule where
-  pretty (t :- []) = pretty t ++ "."
-  pretty (t :- ts) = pretty t ++ ":- " ++ intercalate ", " (map pretty ts) ++ "."
+  pretty r = prettyWithVars [] r
+  prettyWithVars l (t :- []) = prettyWithVars l t ++ "."
+  prettyWithVars l (t :- ts) = prettyWithVars l t ++ ":- " ++ intercalate ", " (map (prettyWithVars l) ts) ++ "."
 
 instance Pretty Goal where
-  pretty g = intercalate ", " (map pretty g) ++ "."
+  pretty g = prettyWithVars [] g
+  prettyWithVars l g = intercalate ", " (map (prettyWithVars l) g) ++ "."
 
 instance Pretty Prog where
-  pretty p = unlines (map pretty p)
+  pretty p = prettyWithVars [] p
+  prettyWithVars l p = unlines (map (prettyWithVars l) p)
 
 instance Pretty SLDTree where
-  pretty (SLDTree g n) = "SLDTree " ++ pretty g ++ unwords (map (\(s,st) -> "<=" ++ pretty s ++ ":" ++ pretty st ++ "=>") n)
+  pretty s = prettyWithVars [] s
+  prettyWithVars l (SLDTree g n) = "SLDTree " ++ prettyWithVars l g ++ unwords (map (\(s,st) -> "<=" ++ prettyWithVars l s ++ ":" ++ prettyWithVars l st ++ "=>") n)
 
 
 -- type synonyms cannot be recursive :-(

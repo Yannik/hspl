@@ -50,7 +50,9 @@ compose (s1:r) s2 = compose r (applySingleToSubst s1 s2) ++
     right x = snd (unzip x)
 
 instance Pretty Subst where
-  pretty s = "{" ++ intercalate ", " (map pretty s) ++ "}"
+  pretty s = prettyWithVars [] s
+  prettyWithVars l s = "{" ++ intercalate ", " (map (prettyWithVars l) s) ++ "}"
 
 instance Pretty SingleSub where
-  pretty (left, right) = pretty left ++ " -> " ++ pretty right
+  pretty s = prettyWithVars [] s
+  prettyWithVars l (left, right) = prettyWithVars l left ++ " -> " ++ prettyWithVars l right
