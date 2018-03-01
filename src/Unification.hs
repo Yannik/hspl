@@ -1,5 +1,5 @@
 module Unification
-  ( ds
+  ( ds, unify
   ) where
 
 import Type
@@ -32,7 +32,7 @@ unify' :: Term -> Term -> Subst -> Maybe Subst
 unify' t1 t2 s = case ds (apply s t1) (apply s t2) of
                    Nothing -> Just s
                    Just (Var v, t)  | varInTerm (Var v) t -> Nothing
-                                    | otherwise      -> unify' t1 t2 (compose (single v t) s)
+                                    | otherwise           -> unify' t1 t2 (compose (single v t) s)
                    _ -> Nothing
 
 
