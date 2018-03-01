@@ -1,5 +1,5 @@
 module ResultSearch
-  ( ds
+  ( dfs, bfs, solve
   ) where
 
 import SLD
@@ -18,7 +18,7 @@ dfs (SLDTree g n) = map (extractKVMatch (goalToVarList g)) (dfs' (SLDTree g n) [
   dfs' :: SLDTree -> Subst -> [Subst]
   dfs' (SLDTree [] []) s = [s]
   dfs' (SLDTree _ []) s = []
-  dfs' (SLDTree g x) s = concat (map (\(s2,st) -> dfs' st (compose s2 s)) x)
+  dfs' (SLDTree _ x) s = concat (map (\(s2,st) -> dfs' st (compose s2 s)) x)
 
 extractKVMatch :: (Eq a) => [a] -> [(a,b)] -> [(a,b)]
 extractKVMatch a kvs = mapMaybe (\k -> lookupKV k kvs) a
@@ -36,8 +36,28 @@ termToVarList :: Term -> [VarIndex]
 termToVarList (Var v) = [v]
 termToVarList (Comb _ t) = concatMap termToVarList t
 
+type Queue a = [a]
+type SLDQueue = Queue (Subst, SLDTree)
 
---bfs :: Strategy
+push :: SLDQueue -> (Subst, SLDTree) -> SLDQueue
+push q x = x:q
+
+pop :: SLDQueue -> Maybe (SLDQueue, (Subst, SLDTree))
+pop q | length q > 0 = Just (init q, last q)
+      | otherwise = Nothing
+
+bfs :: Strategy
+bfs (SLDTree g n) = map (extractKVMatch (goalToVarList g)) (bfs' [([], (SLDTree g n))] [])
+  where
+  bfs' :: SLDQueue -> [Subst] -> [Subst]
+  bfs' q s = case pop q of
+             -- leaf, non-EOQ
+             Just (q2, (sub, SLDTree st [])) -> bfs' q2 (s ++ [sub])
+             -- non-leaf
+             Just (q2, (sub, SLDTree _ n)) -> bfs' (foldl (\q2 (sub2, st) -> push q2 (compose sub2 sub, st)) q2 n) s
+             -- EOQ
+             Nothing -> s
+
 
 solve :: Strategy -> Prog -> Goal -> [Subst]
 solve s p g = s (sld p g)
